@@ -1,0 +1,60 @@
+---
+import ProjectEntry from "./ProjectEntry.astro";
+const projects = [
+  {
+    title:
+      "Navattic: YC-Backed SaaS company specialising in interactive product demos.",
+    description:
+      "Deliverables include turning over a designed and developed website in a 2 week super sprint, with multiple animated graphics and dozens of CMS routes to account for.",
+    stack: ["NextJS", "Tailwind", "TypeScript", "Motion", "Sanity CMS"],
+    images: [
+      "https://iiodzelpjz.ufs.sh/f/uU55CSHY2nOZiBbY7U6xJW2cXYzsF9MT83qvOmSrdDyRxu1E",
+      "https://iiodzelpjz.ufs.sh/f/uU55CSHY2nOZiBbY7U6xJW2cXYzsF9MT83qvOmSrdDyRxu1E",
+    ],
+  },
+  {
+    title: "Lazyrecords: aLGORITHM-FREE MUSIC DISCOVERY APP (SIDE PROJECT)",
+    description:
+      "Product design, full-stack development, branding and marketing for an algo-free music discovery tool I made with my close friend Marcus (@comfortzonedj).",
+    stack: [
+      "NextJS",
+      "Tailwind",
+      "TypeScript",
+      "Motion",
+      "ThreeJS",
+      "Stripe",
+      "Supabase",
+    ],
+    images: [
+      "https://iiodzelpjz.ufs.sh/f/uU55CSHY2nOZPt5K2Pik9ZnVM4Tza6vQhKIGJUypAbNd0oWF",
+      "https://utfs.io/f/uU55CSHY2nOZk2fX9FJfqhyzRDYjOeuWT74b2c1kQrXlaA6i",
+    ],
+  },
+  {
+    title: "Sequence: All-in-one development platform for web3 games",
+    description:
+      "Product design, design system development and maintenance in collaboration with 56.digital.",
+    stack: ["Figma"],
+    images: [
+      "https://iiodzelpjz.ufs.sh/f/uU55CSHY2nOZ6kC1BPgcqDNHchOJ4syvYzouQg5MwkEUtpFP",
+      "https://iiodzelpjz.ufs.sh/f/uU55CSHY2nOZJHhxprWiFBCM7ojU9VpIYmufd3sXreO6hnbt",
+      "https://iiodzelpjz.ufs.sh/f/uU55CSHY2nOZ0VjUX7MoQFWieS5JjcpCAfZBUn7hEDXO8vIP",
+    ],
+  },
+];
+---
+
+<section class="w-full mx-auto p-8 pt-[25vh]">
+  <div
+    class="py-10 text-lg uppercase text-center sticky top-[50vh] z-0 opacity-50"
+  >
+    Recent work
+  </div>
+  <div class="relative z-10 mt-[50vh]">
+    {
+      projects.map((project) => {
+        return <ProjectEntry project={project} />;
+      })
+    }
+  </div>
+</section>

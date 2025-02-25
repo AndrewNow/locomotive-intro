@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "AlteHaas", sans-serif;
+  --font-serif: "Editorial", serif;
+}
+
+@font-face {
+  font-family: "Editorial";
+  src: url("/fonts/Editorial-Ultralight.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "AlteHaas";
+  src: url("/fonts/AlteHaas.woff2") format("woff2");
+}
+@font-face {
+  font-family: "AlteHaasBold";
+  src: url("/fonts/AlteHaas-Bold.woff2") format("woff2");
+}
+
+
+::selection {
+  background: #dcdfc4;
+  color: black;
+}
+

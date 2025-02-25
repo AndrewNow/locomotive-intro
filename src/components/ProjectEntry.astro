@@ -1,0 +1,67 @@
+---
+import { Image } from "astro:assets";
+
+const { project } = Astro.props;
+---
+
+<div
+  class="relative z-10 flex flex-col gap-4 bg-white border-b border-gray-500 [&:not(:first-child)]:pt-30"
+>
+  <h2
+    class="text-8xl max-w-[1450px] mx-auto uppercase text-center tracking-tighter leading-tighter text-balance sticky top-4 py-10"
+  >
+    {project.title}
+    <div class="absolute top-0 left-0 size-2 bg-gray-900">
+      <!-- <div class="absolute top-0 left-0 size-1.5 bg-white"></div> -->
+    </div>
+    <div class="absolute top-0 right-0 size-2 bg-gray-900">
+      <!-- <div class="absolute top-0 right-0 size-1.5 bg-white"></div> -->
+    </div>
+    <div class="absolute bottom-0 left-0 size-2 bg-gray-900">
+      <!-- <div class="absolute bottom-0 left-0 size-1.5 bg-white"></div> -->
+    </div>
+    <div class="absolute bottom-0 right-0 size-2 bg-gray-900">
+      <!-- <div class="absolute bottom-0 right-0 size-1.5 bg-white"></div> -->
+    </div>
+  </h2>
+  <div class="bg-white z-20">
+    <div class="flex gap-4 pb-20 pt-2">
+      {
+        project.images &&
+          project.images.map((img: string) => {
+            return (
+              <Image
+                src={img}
+                alt=""
+                class="w-1/2 object-cover max-h-[60vh]"
+                inferSize
+              />
+            );
+          })
+      }
+    </div>
+    <div class="flex gap-4 pb-4 relative items-stretch">
+      <div class="w-1/2 text-sm text-balance flex flex-col overflow-hidden">
+        <div class="uppercase text-xs bg-black text-white py-1 p-2">
+          À Propos
+        </div>
+        <p class="text-gray-500 bg-gray-200 px-2 py-2 flex-1">
+          {project.description}
+        </p>
+      </div>
+      <div class="w-1/2 text-sm text-balance flex flex-col overflow-hidden">
+        <div class="uppercase text-xs bg-black text-white px-2 py-1">Stack</div>
+        <div class="flex flex-wrap gap-1 bg-gray-200 p-2 flex-1">
+          {
+            project.stack &&
+              project.stack.map((tech: string, index: number) => (
+                <span class="text-sm text-gray-500">
+                  {index < project.stack.length - 1 ? `${tech}, ` : `${tech}.`}
+                </span>
+              ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
