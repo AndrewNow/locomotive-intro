@@ -1,4 +1,6 @@
-<section class="h-screen w-full relative" id="hero-container">
+<section class="h-screen w-full relative overflow-x-hidden" id="hero-container">
+  <canvas id="webgl" class="z-20 w-screen h-screen fixed inset-0 outline-1">
+  </canvas>
   <h1
     class="p-8 text-5xl text-balance absolute bottom-0 left-0 opacity-40 font-serif max-w-[1500px] leading-tight font-extralight tracking-normal"
     id="hero-text"
@@ -8,3 +10,266 @@
     Three.js, Sanity CMS, Payload CMS, Stripe, Shopify Liquid, Motion & GSAP.
   </h1>
 </section>
+
+<script>
+  // @ts-ignore
+  import * as THREE from "three";
+  import gsap from "gsap";
+
+
+  const vertexShader = `
+    varying vec2 vUv;
+
+    void main(){
+        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+        vec4 viewPosition = viewMatrix * modelPosition;
+        vec4 clipPosition = projectionMatrix * viewPosition;
+
+        gl_Position = clipPosition;
+
+        vUv = uv;
+    }
+  `;
+
+  const fragmentShader = `
+    varying vec2 vUv;
+    uniform float uProgress;    // Animation progress (0-1)
+    uniform vec2 uSize;         // Screen size in pixels
+    uniform sampler2D uTexture; // Background texture
+    uniform float uSmoothness;  // Edge smoothness (0.01-0.1)
+    #define PI 3.1415926538
+
+    // ===== TWEAKABLE VALUES =====
+    // Adjust these values to customize the effect
+    
+    // NOISE SETTINGS
+    float noiseFrequency = 1.0;    // Frequency of noise waves (0.5-3.0)
+    float noiseAmplitude = 0.25;   // Amplitude of noise distortion (0.1-0.5)
+    
+    // CIRCLE SETTINGS
+    float circleCount1 = 3.0;      // Number of circles in first ring (2-6)
+    float circleCount2 = 3.0;      // Number of circles in second ring (2-6)
+    float circleCount3 = 5.0;      // Number of circles in third ring (3-8)
+    
+    float circleOffset1 = 0.2;     // Position of first circle ring (0.1-0.3)
+    float circleOffset2 = 0.25;    // Position of second circle ring (0.2-0.4)
+    float circleOffset3 = 0.45;    // Position of third circle ring (0.3-0.6)
+    
+    float circleNoiseAmount = 15.0; // Amount of noise in circle shape (5.0-20.0)
+    
+    // BLENDING SETTINGS
+    float blendSharpness = 50.0;   // Sharpness of circle blending (20.0-100.0)
+    
+    // ANIMATION SETTINGS
+    float easingPower = 2.5;       // Power of easing curve (1.0-4.0)
+    // =============================
+
+    float noise(vec2 point) {
+        // Creates organic wave patterns
+        float frequency = noiseFrequency;
+        float angle = atan(point.y,point.x) + uProgress * PI;
+
+        float w0 = (cos(angle * frequency) + 1.0) / 2.0; // normalize [0 - 1]
+        float w1 = (sin(2.*angle * frequency) + 1.0) / 2.0; // normalize [0 - 1]
+        float w2 = (cos(3.*angle * frequency) + 1.0) / 2.0; // normalize [0 - 1]
+        float wave = (w0 + w1 + w2) / 3.0; // normalize [0 - 1]
+        return wave;
+    }
+
+    float softMax(float a, float b, float k) {
+        return log(exp(k * a) + exp(k * b)) / k;
+    }
+
+    float softMin(float a, float b, float k) {
+        return -softMax(-a, -b, k);
+    }
+
+    float circleSDF(vec2 pos, float rad) {
+        // Creates a circle with organic, animated edges
+        float a = sin(uProgress * 0.2) * noiseAmplitude; // range -0.25 - 0.25
+        float amt = 0.5 + a;
+        float circle = length(pos);
+        circle += noise(pos) * rad * amt;
+        return circle;
+    }
+
+    float radialCircles(vec2 p, float o, float count) {
+        // Creates multiple circles arranged in a ring
+        vec2 offset = vec2(o, o);
+
+        float angle = (2. * PI)/count;
+        float s = round(atan(p.y, p.x)/angle);
+        float an = angle * s;
+        vec2 q = vec2(offset.x * cos(an), offset.y * sin(an));
+        vec2 pos = p - q;
+        float circle = circleSDF(pos, circleNoiseAmount);
+        return circle;
+    }
+
+    void main() {
+        // White background (change RGB values to change color)
+        vec4 bg = vec4(1.0, 1.0, 1.0, 1.0);
+        // Transparent texture
+        vec4 texture = vec4(0.0, 0.0, 0.0, 0.0);
+        
+        // Calculate the diagonal length of the screen to ensure full coverage
+        float diagonal = sqrt(uSize.x * uSize.x + uSize.y * uSize.y);
+        
+        // Use normalized UV coordinates for calculations
+        vec2 center = vec2(0.5, 0.5);
+        
+        // Calculate progress with easing - REVERSED (1-uProgress)
+        float t = pow(1.0 - uProgress, easingPower);
+        
+        // Calculate radius based on diagonal to ensure full coverage
+        float rad = t * diagonal;
+        
+        // Calculate distance from center in screen space
+        vec2 screenUV = (vUv - center) * uSize;
+        float c1 = circleSDF(screenUV, rad);
+        
+        // Calculate radial circles in screen space
+        float r1 = radialCircles(screenUV, circleOffset1 * diagonal, circleCount1);
+        float r2 = radialCircles(screenUV, circleOffset2 * diagonal, circleCount2);
+        float r3 = radialCircles(screenUV, circleOffset3 * diagonal, circleCount3);
+        
+        // Combine circles with soft blending
+        float k = blendSharpness / diagonal;
+        float circle = softMin(c1, r1, k); 
+        circle = softMin(circle, r2, k);
+        circle = softMin(circle, r3, k);
+        
+        // Create the mask with smooth edges
+        float smoothingFactor = uSmoothness * diagonal;
+        circle = smoothstep(rad - smoothingFactor, rad, circle);
+        
+        // Mix background and transparent based on the mask
+        vec4 color = mix(bg, texture, circle);
+        gl_FragColor = color;
+    }
+  `;
+
+  // Wait for window load
+  window.addEventListener("load", () => {
+    console.log("Window loaded");
+
+    // Get the canvas element
+    const canvas = document.getElementById("webgl");
+    if (!canvas) {
+      console.error("Canvas not found");
+      return;
+    }
+    console.log("Canvas found");
+
+    // Create scene
+    const scene = new THREE.Scene();
+
+    // Set up sizes
+    const sizes = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+
+    // Create camera with proper FOV calculation
+    const fov = 75; // degrees
+    const cameraZ =
+      window.innerWidth /
+      window.innerHeight /
+      (2 * Math.tan((fov * Math.PI) / 360));
+    const camera = new THREE.PerspectiveCamera(
+      fov,
+      sizes.width / sizes.height,
+      0.1,
+      100
+    );
+    camera.position.z = cameraZ * 0.5; // Add 10% margin to ensure full coverage
+    scene.add(camera);
+
+    // Create renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      alpha: true,
+      antialias: true,
+    });
+    renderer.setSize(sizes.width, sizes.height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    console.log("Three.js initialized");
+
+    // Create a transparent texture (we'll control colors in the shader)
+    const data = new Uint8Array([0, 0, 0, 0]);
+    const backgroundTexture = new THREE.DataTexture(
+      data,
+      1,
+      1,
+      THREE.RGBAFormat
+    );
+    backgroundTexture.needsUpdate = true;
+
+    // Create plane geometry that exactly matches screen aspect ratio
+    const aspectRatio = sizes.width / sizes.height;
+    const planeWidth = 2; // Fixed width in Three.js units
+    const planeHeight = planeWidth / aspectRatio;
+
+    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight, 256, 256);
+    console.log("Plane dimensions:", planeWidth, planeHeight);
+
+    // Create shader material using inlined shaders
+    const material = new THREE.ShaderMaterial({
+      vertexShader,
+      fragmentShader,
+      uniforms: {
+        uProgress: { value: 0 }, // Start at 0, will animate to 1
+        uSize: { value: new THREE.Vector2(sizes.width, sizes.height) },
+        uTexture: { value: backgroundTexture },
+        uSmoothness: { value: 0.05 }, // Controls edge smoothness (0.01-0.1)
+      },
+      transparent: true,
+    });
+
+    // Create mesh
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    console.log("Shader plane added to scene");
+
+    // Animation loop
+    const clock = new THREE.Clock();
+
+    function animate() {
+      const elapsedTime = clock.getElapsedTime();
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+    console.log("Animation started");
+
+    // Animate the progress uniform to create the reveal effect
+    gsap.to(material.uniforms.uProgress, {
+      value: 1,
+      duration: 5.5,
+      ease: "power2.out",
+      delay: 0.5,
+    });
+
+    // Handle resize
+    window.addEventListener("resize", () => {
+      // Update sizes
+      sizes.width = window.innerWidth;
+      sizes.height = window.innerHeight;
+
+      // Update camera
+      camera.aspect = sizes.width / sizes.height;
+      camera.updateProjectionMatrix();
+
+      // Update renderer
+      renderer.setSize(sizes.width, sizes.height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Update uniforms
+      material.uniforms.uSize.value.set(sizes.width, sizes.height);
+    });
+  });
+</script>
