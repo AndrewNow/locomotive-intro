@@ -8,7 +8,7 @@ const { project } = Astro.props;
   class="relative z-10 flex flex-col gap-4 bg-white border-b border-gray-500 [&:not(:first-child)]:pt-30"
 >
   <h2
-    class="text-8xl max-w-[1450px] mx-auto uppercase text-center tracking-tighter leading-tighter text-balance sticky top-4 py-10"
+    class="text-8xl max-w-[1450px] mx-auto uppercase text-center tracking-tighter leading-[85%] text-balance sticky top-4 py-10 mb-10"
   >
     {project.title}
     <div class="absolute top-0 left-0 size-2 bg-gray-900">
@@ -25,33 +25,65 @@ const { project } = Astro.props;
     </div>
   </h2>
   <div class="bg-white z-20">
-    <div class="flex gap-4 pb-20 pt-2">
+    <div class="flex gap-2 pb-20 pt-2 w-full relative h-full">
       {
         project.images &&
-          project.images.map((img: string) => {
-            return (
-              <Image
-                src={img}
-                alt=""
-                class="w-1/2 object-cover max-h-[60vh]"
-                inferSize
-              />
-            );
-          })
+          project.images.map(
+            (asset: {
+              src: string;
+              isVideo: boolean;
+              aspectRatio: string;
+              isHorizontal?: boolean;
+            }) => {
+              return (
+                <div
+                  class={
+                    asset.isHorizontal
+                      ? `relative w-full h-auto ${asset.aspectRatio}`
+                      : `relative w-auto`
+                  }
+                >
+                  {asset.isVideo ? (
+                    <video
+                      src={asset.src}
+                      class="relative size-full object-cover"
+                      autoplay
+                      muted
+                      loop
+                      playsinline
+                    />
+                  ) : (
+                    <Image
+                      src={asset.src}
+                      alt=""
+                      class="relative size-full object-cover"
+                      inferSize
+                    />
+                  )}
+                </div>
+              );
+            }
+          )
       }
     </div>
-    <div class="flex gap-4 pb-4 relative items-stretch">
+    <div class="max-w-[1450px] mx-auto flex gap-1 pb-20 relative items-stretch">
       <div class="w-1/2 text-sm text-balance flex flex-col overflow-hidden">
-        <div class="uppercase text-xs bg-black text-white py-1 p-2">
+        <div class="uppercase text-xs tracking-wider bg-black text-white p-1">
           À Propos
         </div>
-        <p class="text-gray-500 bg-gray-200 px-2 py-2 flex-1">
-          {project.description}
-        </p>
+        <div class="text-gray-500 bg-gray-100 p-1 flex-1">
+          <p class="text-balance max-w-[100ch]">
+            {project.description}
+          </p>
+        </div>
       </div>
       <div class="w-1/2 text-sm text-balance flex flex-col overflow-hidden">
-        <div class="uppercase text-xs bg-black text-white px-2 py-1">Stack</div>
-        <div class="flex flex-wrap gap-1 bg-gray-200 p-2 flex-1">
+        <div
+          class="uppercase text-xs tracking-wider bg-black text-white px-1 py-1"
+        >
+          Stack
+        </div>
+        <div class="flex flex-wrap gap-1 bg-gray-100 p-1 flex-1">
           {
             project.stack &&
               project.stack.map((tech: string, index: number) => (
