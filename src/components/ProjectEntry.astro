@@ -5,7 +5,7 @@ const { project } = Astro.props;
 ---
 
 <div
-  class="relative z-10 flex flex-col gap-4 bg-white [&:not(:first-child)]:pt-30 pt-10"
+  class="px-2 relative z-10 flex flex-col gap-4 bg-white [&:not(:first-child)]:pt-30 pt-10 [&:(last-child)]:pb-4"
 >
   <h2
     class="text-8xl max-w-[1450px] mx-auto uppercase text-center tracking-tighter leading-[85%] text-balance sticky top-4 py-10 mb-10 project-title"
@@ -29,7 +29,7 @@ const { project } = Astro.props;
     </div>
   </h2>
   <div class="bg-white z-20" id="project-images">
-    <div class="flex gap-2 px-2 pb-5 pt-2 w-full relative h-full">
+    <div class="flex gap-2 pb-4 pt-2 w-full relative h-full">
       {
         project.images &&
           project.images.map(
@@ -65,7 +65,10 @@ const { project } = Astro.props;
                       src={asset.src}
                       alt=""
                       class="relative size-full object-cover"
-                      inferSize
+                      width={800}
+                      height={600}
+                      format="webp"
+                      quality={80}
                     />
                   )}
                 </div>
@@ -84,7 +87,7 @@ const { project } = Astro.props;
         </p>
       </div>
       <div class="pt-1 text-sm text-balance flex overflow-hidden">
-        <!-- <div -->
+        <div
           class="flex flex-col bg-white uppercase text-[10px] tracking-wider p-1"
         >
           <span class="translate-y-[1px]"> [ Stack ] </span>
@@ -102,7 +105,6 @@ const { project } = Astro.props;
       </div>
     </div>
   </div>
-  <!-- Lightbox overlay -->
 </div>
 
 <script>
@@ -130,17 +132,17 @@ const { project } = Astro.props;
       delay: randomDelay,
     });
 
-    // Add more dramatic flicker effect
+    // Add more dramatic flicker effect with subtle x translation
     flickerTimeline
-      .to(element, { opacity: 1, scale: 1.2, duration: 0.08 })
-      .to(element, { opacity: 0, scale: 0.8, duration: 0.04 })
-      .to(element, { opacity: 0.9, scale: 1.1, duration: 0.06 })
-      .to(element, { opacity: 0.1, scale: 0.9, duration: 0.03 })
-      .to(element, { opacity: 1, scale: 1.15, duration: 0.05 })
-      .to(element, { opacity: 0.3, scale: 0.85, duration: 0.04 })
-      .to(element, { opacity: 0.8, scale: 1.05, duration: 0.06 })
-      .to(element, { opacity: 0.2, scale: 0.95, duration: 0.03 })
-      .to(element, { opacity: 1, scale: 1, duration: 0.07 });
+      .to(element, { opacity: 1, scale: 1.2, x: 0.3, duration: 0.08 })
+      .to(element, { opacity: 0, scale: 0.8, x: -0.3, duration: 0.04 })
+      .to(element, { opacity: 0.9, scale: 1.1, x: 0.2, duration: 0.06 })
+      .to(element, { opacity: 0.1, scale: 0.9, x: -0.2, duration: 0.03 })
+      .to(element, { opacity: 1, scale: 1.15, x: 0.3, duration: 0.05 })
+      .to(element, { opacity: 0.3, scale: 0.85, x: -0.3, duration: 0.04 })
+      .to(element, { opacity: 0.8, scale: 1.05, x: 0.2, duration: 0.06 })
+      .to(element, { opacity: 0.2, scale: 0.95, x: -0.2, duration: 0.03 })
+      .to(element, { opacity: 1, scale: 1, x: 0, duration: 0.07 });
   });
 
   // Title flickering effect
@@ -158,141 +160,50 @@ const { project } = Astro.props;
       },
     });
 
-    // Create a more subtle flicker for the title text
+    // Create a more subtle flicker for the title text with minimal x translation
     titleFlickerTimeline
       .set(title, { opacity: 0 }) // Set initial opacity here instead
-      .to(title, { opacity: 0.7, duration: 0.1 })
-      .to(title, { opacity: 0.2, duration: 0.05 })
-      .to(title, { opacity: 0.9, duration: 0.08 })
-      .to(title, { opacity: 0.5, duration: 0.03 })
-      .to(title, { opacity: 1, duration: 0.07 })
-      .to(title, { opacity: 0.8, duration: 0.02 })
-      .to(title, { opacity: 1, duration: 0.06 })
-      .to(title, { opacity: 0.6, duration: 0.04 })
-      .to(title, { opacity: 1, duration: 0.1 });
+      .to(title, { opacity: 0.7, x: 0.5, duration: 0.1 })
+      .to(title, { opacity: 0.2, x: -0.3, duration: 0.05 })
+      .to(title, { opacity: 0.9, x: 0.4, duration: 0.08 })
+      .to(title, { opacity: 0.5, x: -0.4, duration: 0.03 })
+      .to(title, { opacity: 1, x: 0.3, duration: 0.07 })
+      .to(title, { opacity: 0.8, x: -0.2, duration: 0.02 })
+      .to(title, { opacity: 1, x: 0.2, duration: 0.06 })
+      .to(title, { opacity: 0.6, x: -0.1, duration: 0.04 })
+      .to(title, { opacity: 1, x: 0, duration: 0.1 });
   });
 
-  // const projectImages = document.querySelectorAll("#project-images");
-
-  // projectImages.forEach((imagesContainer) => {
-  //   // Create timeline for each images container
-  //   const projectImagesTimeline = gsap.timeline({
-  //     scrollTrigger: {
-  //       trigger: imagesContainer,
-  //       start: "top 15%", // Start when images are 20% from top of viewport
-  //       end: "top 5%", // End when images reach the top of viewport
-  //       scrub: true, // Smoothly animate on scroll
-  //       once: false, // Allow animation to repeat
-  //       toggleActions: "play reverse play reverse", // Play forward when scrolling down, reverse when scrolling up
-  //     },
-  //   });
-
-  //   // Fade out all titles as images approach the top
-  //   // This will only run after the flicker animation has completed
-  //   projectTitles.forEach((title) => {
-  //     projectImagesTimeline.to(title, {
-  //       opacity: 0,
-  //       duration: 0.5, // Slightly longer duration for smoother fade
-  //       ease: "power2.out", // Smooth easing curve
-  //     }); // Remove the 0 position parameter to let animations sequence properly
-  //   });
-  // });
-
   // Lightbox functionality
-  const lightbox = document.getElementById("lightbox");
-  const lightboxContent = document.getElementById("lightbox-content");
-  const closeButton = document.getElementById("close-lightbox");
   const triggers = document.querySelectorAll(".lightbox-trigger");
 
   // Store all media elements for quick access
-  const mediaElements: { isVideo: boolean; src: string }[] = [];
+  const mediaElements = [];
   triggers.forEach((trigger, index) => {
     // Store reference to the media element (image or video)
     const mediaElement = trigger.querySelector("img, video");
-    mediaElements[index] = {
-      isVideo: mediaElement?.tagName === "VIDEO",
-      src: mediaElement?.getAttribute("src") ?? "",
-    };
+    if (mediaElement) {
+      mediaElements[index] = {
+        isVideo: mediaElement.tagName === "VIDEO",
+        src: mediaElement.getAttribute("src") || "",
+      };
 
-    // Add click event to open lightbox
-    trigger.addEventListener("click", () => openLightbox(index));
-  });
-
-  function openLightbox(index: number) {
-    const media = mediaElements[index];
-
-    // Clear previous content
-    if (lightboxContent) {
-      lightboxContent.innerHTML = "";
-
-      // Create appropriate element based on type
-      if (media.isVideo) {
-        const video = document.createElement("video");
-        video.src = media.src;
-        video.classList.add("max-w-full", "max-h-[80vh]", "object-contain");
-        video.autoplay = true;
-        video.loop = true;
-        video.muted = false; // Unmuted in lightbox
-        video.controls = true;
-        video.playsInline = true;
-        lightboxContent.appendChild(video);
-      } else {
-        const img = document.createElement("img");
-        img.src = media.src;
-        img.classList.add("max-w-full", "max-h-[80vh]", "object-contain");
-        lightboxContent.appendChild(img);
-      }
-
-      // Show lightbox
-      lightbox?.classList.remove("hidden");
-
-      // Animate in
-      gsap.to(lightboxContent, {
-        y: 0,
-        opacity: 1,
-        duration: 0.4,
-        ease: "power2.out",
+      // Add click event to open lightbox
+      trigger.addEventListener("click", () => {
+        console.log(
+          "Trigger clicked, opening lightbox with:",
+          mediaElements[index]
+        );
+        // Dispatch custom event to open the global lightbox
+        document.dispatchEvent(
+          new CustomEvent("openGlobalLightbox", {
+            detail: {
+              content: mediaElements[index].src,
+              isVideo: mediaElements[index].isVideo,
+            },
+          })
+        );
       });
-    }
-  }
-
-  function closeLightbox() {
-    // Animate out
-    gsap.to(lightboxContent, {
-      y: 20,
-      opacity: 0,
-      duration: 0.3,
-      ease: "power2.in",
-      onComplete: () => {
-        lightbox?.classList.add("hidden");
-        // Stop video if playing
-        const video = lightboxContent?.querySelector("video");
-        if (video) video.pause();
-      },
-    });
-  }
-
-  // Close lightbox when clicking the close button
-  if (closeButton) {
-    closeButton.addEventListener("click", closeLightbox);
-  }
-
-  // Close lightbox when clicking outside the content
-  if (lightbox) {
-    lightbox.addEventListener("click", (e) => {
-      if (
-        e.target === lightbox ||
-        e.target === lightbox.querySelector(".bg-black/70")
-      ) {
-        closeLightbox();
-      }
-    });
-  }
-
-  // Close lightbox with Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !lightbox?.classList.contains("hidden")) {
-      closeLightbox();
     }
   });
 </script>
