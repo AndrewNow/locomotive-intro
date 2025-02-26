@@ -233,17 +233,17 @@
       link.addEventListener("click", (e) => {
         e.preventDefault();
         const textElement = link.querySelector("#email-text");
+        if (!textElement) return;
+
         const originalText = textElement.innerHTML;
-        console.log(originalText);
-        // Get email from data attribute
         const email = link.getAttribute("data-email");
+        if (!email) return;
 
         navigator.clipboard
           .writeText(email)
           .then(() => {
-            // Change text to "Copied!"
             textElement.innerHTML = "Copied!";
-            textElement.style.color = "green";
+            (textElement as HTMLElement).style.color = "green";
 
             // Show checkmark
             gsap
@@ -255,11 +255,11 @@
             // Reset after delay
             setTimeout(() => {
               textElement.innerHTML = originalText;
-              textElement.style.color = "white";
-              copyIcon.textContent = "📋";
-
-              // Explicitly reset the copy icon to hidden state
-              gsap.set(copyIcon, { opacity: 0, x: 0 });
+              (textElement as HTMLElement).style.color = "white";
+              if (copyIcon) {
+                copyIcon.textContent = "📋";
+                gsap.set(copyIcon, { opacity: 0, x: 0 });
+              }
             }, 1500);
           })
           .catch((err) => {

@@ -29,7 +29,7 @@ const { project } = Astro.props;
     </div>
   </h2>
   <div class="bg-white z-20" id="project-images">
-    <div class="flex gap-2 pb-5 pt-2 w-full relative h-full">
+    <div class="flex gap-2 px-2 pb-5 pt-2 w-full relative h-full">
       {
         project.images &&
           project.images.map(
@@ -84,7 +84,7 @@ const { project } = Astro.props;
         </p>
       </div>
       <div class="pt-1 text-sm text-balance flex overflow-hidden">
-        <div
+        <!-- <div -->
           class="flex flex-col bg-white uppercase text-[10px] tracking-wider p-1"
         >
           <span class="translate-y-[1px]"> [ Stack ] </span>
@@ -100,38 +100,8 @@ const { project } = Astro.props;
           }
         </div>
       </div>
-      <!-- <div class="max-w-[1450px] mx-auto flex gap-1 pb-20 relative items-stretch">
-      <div class="w-1/2 text-sm text-balance flex flex-col overflow-hidden">
-        <div class="uppercase text-xs tracking-wider bg-black text-white p-1">
-          À Propos
-        </div>
-        <div class="text-gray-500 bg-gray-100 p-1 flex-1">
-          <p class="text-balance max-w-[100ch]">
-            {project.description}
-          </p>
-        </div>
-      </div>
-      <div class="w-1/2 text-sm text-balance flex flex-col overflow-hidden">
-        <div
-          class="uppercase text-xs tracking-wider bg-black text-white px-1 py-1"
-        >
-          Stack
-        </div>
-        <div class="flex flex-wrap gap-1 bg-gray-100 p-1 flex-1">
-          {
-            project.stack &&
-              project.stack.map((tech: string, index: number) => (
-                <span class="text-sm text-gray-500">
-                  {index < project.stack.length - 1 ? `${tech}, ` : `${tech}.`}
-                </span>
-              ))
-          }
-        </div>
-      </div>
-    </div> -->
     </div>
   </div>
-
   <!-- Lightbox overlay -->
 </div>
 
