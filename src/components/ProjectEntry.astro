@@ -59,7 +59,8 @@ const { project } = Astro.props;
                       muted
                       loop
                       playsinline
-                      preload="none"
+                      autoplay
+                      preload="metadata"
                       poster={asset.poster || ""}
                     />
                   ) : (
@@ -211,44 +212,44 @@ const { project } = Astro.props;
     }
   });
 
-  // Lazy load videos and play when in viewport
-  const lazyVideos = document.querySelectorAll(".lazy-video");
+  // // Lazy load videos and play when in viewport
+  // const lazyVideos = document.querySelectorAll(".lazy-video");
 
-  // Set up Intersection Observer for videos
-  if ("IntersectionObserver" in window) {
-    const videoObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const video = entry.target as HTMLVideoElement;
+  // // Set up Intersection Observer for videos
+  // if ("IntersectionObserver" in window) {
+  //   const videoObserver = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         const video = entry.target as HTMLVideoElement;
 
-          if (entry.isIntersecting) {
-            // Start loading and playing the video when it enters viewport
-            if (video.paused) {
-              video.load(); // Ensure video is loaded
-              video.play().catch((e) => console.log("Video play error:", e));
-            }
-          } else {
-            // Pause video when it leaves viewport to save resources
-            if (!video.paused) {
-              video.pause();
-            }
-          }
-        });
-      },
-      {
-        rootMargin: "100px", // Start loading slightly before they come into view
-        threshold: 0.1,
-      }
-    );
+  //         if (entry.isIntersecting) {
+  //           // Start loading and playing the video when it enters viewport
+  //           if (video.paused) {
+  //             video.load(); // Ensure video is loaded
+  //             video.play().catch((e) => console.log("Video play error:", e));
+  //           }
+  //         } else {
+  //           // Pause video when it leaves viewport to save resources
+  //           if (!video.paused) {
+  //             video.pause();
+  //           }
+  //         }
+  //       });
+  //     },
+  //     {
+  //       rootMargin: "100px", // Start loading slightly before they come into view
+  //       threshold: 0.1,
+  //     }
+  //   );
 
-    // Observe all lazy videos
-    lazyVideos.forEach((video) => {
-      videoObserver.observe(video);
-    });
-  } else {
-    // Fallback for browsers that don't support Intersection Observer
-    lazyVideos.forEach((video) => {
-      (video as HTMLVideoElement).setAttribute("autoplay", "");
-    });
-  }
+  //   // Observe all lazy videos
+  //   lazyVideos.forEach((video) => {
+  //     videoObserver.observe(video);
+  //   });
+  // } else {
+  //   // Fallback for browsers that don't support Intersection Observer
+  //   lazyVideos.forEach((video) => {
+  //     (video as HTMLVideoElement).setAttribute("autoplay", "");
+  //   });
+  // }
 </script>
