@@ -1,8 +1,11 @@
-<section class="h-screen w-full relative overflow-x-hidden" id="hero-container">
-  <canvas id="webgl" class="z-20 w-screen h-screen fixed inset-0 outline-1">
-  </canvas>
+<section
+  id="hero-bg"
+  class="bg-white h-screen mx-auto relative overflow-x-hidden"
+  id="hero-container"
+>
+  <!-- <canvas id="webgl" class="z-20 w-screen h-screen fixed inset-0 outline-1"></canvas> -->
   <h1
-    class="p-8 text-5xl text-balance absolute bottom-0 left-0 opacity-40 font-serif max-w-[1500px] leading-tight font-extralight tracking-normal"
+    class="mx-auto text-center p-8 text-5xl text-balance absolute inset-x-0 top-1/2 -translate-y-1/2 opacity-40 max-w-[1500px] leading-tight font-serif font-extralight tracking-normal blur-none"
     id="hero-text"
   >
     6+ Years of experience as a FE developer and web designer, 5+ as a
@@ -12,10 +15,73 @@
 </section>
 
 <script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.to("#hero-bg", {
+    opacity: 0,
+    duration: 0.5,
+    // scaleY: 0.5,
+    // skewX: 2,
+    scrollTrigger: {
+      trigger: "#hero-bg",
+      start: "top [60%]",
+      end: "bottom top",
+      scrub: true,
+      onLeave: () =>
+        gsap.to("#hero-bg", {
+          opacity: 0,
+          // scaleY: 0.5,
+          // skewX: 2,
+          duration: 0.5,
+        }),
+      onEnterBack: () =>
+        gsap.to("#hero-bg", {
+          opacity: 0.4,
+          // scaleY: 1,
+          // skewY: 0,
+          duration: 0.5,
+        }),
+    },
+  });
+
+  gsap.to("#hero-text", {
+    opacity: 0,
+    filter: "blur(5px)",
+    skewY: 1,
+    scaleY: 0.8,
+    // skew: 1,
+    scrollTrigger: {
+      trigger: "#hero-text",
+      start: "top [60%]",
+      end: "bottom top",
+      scrub: true,
+      onLeave: () =>
+        gsap.to("#hero-text", {
+          opacity: 0,
+          filter: "blur(5px)",
+          skewY: 1,
+          scaleY: 0.8,
+          // skew: 1,
+          duration: 0.5,
+        }),
+      onEnterBack: () =>
+        gsap.to("#hero-text", {
+          opacity: 0.4,
+          scaleY: 1,
+          filter: "blur(0px)",
+          skewY: 0, // Reset skew on enter back
+          duration: 0.5,
+        }),
+    },
+  });
+</script>
+
+<!-- <script>
   // @ts-ignore
   import * as THREE from "three";
   import gsap from "gsap";
-
 
   const vertexShader = `
     varying vec2 vUv;
@@ -47,21 +113,21 @@
     float noiseAmplitude = 0.25;   // Amplitude of noise distortion (0.1-0.5)
     
     // CIRCLE SETTINGS
-    float circleCount1 = 3.0;      // Number of circles in first ring (2-6)
+    float circleCount1 = 2.0;      // Number of circles in first ring (2-6)
     float circleCount2 = 3.0;      // Number of circles in second ring (2-6)
-    float circleCount3 = 5.0;      // Number of circles in third ring (3-8)
+    float circleCount3 = 10.0;      // Number of circles in third ring (3-8)
     
-    float circleOffset1 = 0.2;     // Position of first circle ring (0.1-0.3)
+    float circleOffset1 = 0.3;     // Position of first circle ring (0.1-0.3)
     float circleOffset2 = 0.25;    // Position of second circle ring (0.2-0.4)
     float circleOffset3 = 0.45;    // Position of third circle ring (0.3-0.6)
     
-    float circleNoiseAmount = 15.0; // Amount of noise in circle shape (5.0-20.0)
+    float circleNoiseAmount = 20.0; // Amount of noise in circle shape (5.0-20.0)
     
     // BLENDING SETTINGS
-    float blendSharpness = 50.0;   // Sharpness of circle blending (20.0-100.0)
+    float blendSharpness = 30.0;   // Sharpness of circle blending (20.0-100.0)
     
     // ANIMATION SETTINGS
-    float easingPower = 2.5;       // Power of easing curve (1.0-4.0)
+    float easingPower = 1.5;       // Power of easing curve (1.0-4.0)
     // =============================
 
     float noise(vec2 point) {
@@ -252,6 +318,16 @@
       duration: 5.5,
       ease: "power2.out",
       delay: 0.5,
+      onComplete: () => {
+        gsap.to(canvas, {
+          opacity: 0,
+          duration: 0.25,
+          ease: "power2.out",
+          onComplete: () => {
+            canvas.style.display = "none";
+          },
+        });
+      },
     });
 
     // Handle resize
@@ -272,4 +348,4 @@
       material.uniforms.uSize.value.set(sizes.width, sizes.height);
     });
   });
-</script>
+</script> -->
