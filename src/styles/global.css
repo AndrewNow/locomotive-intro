@@ -2,13 +2,8 @@
 
 @theme {
   --font-sans: "AlteHaas", sans-serif;
-  --font-serif: "Editorial", serif;
 }
 
-@font-face {
-  font-family: "Editorial";
-  src: url("/fonts/Editorial-Ultralight.woff2") format("woff2");
-}
 
 @font-face {
   font-family: "AlteHaas";
