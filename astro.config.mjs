@@ -6,6 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   image: {
     domains: ["astro.build", "iiodzelpjz.ufs.sh"],
+    service: { entrypoint: 'astro/assets/services/sharp' },
   },
   vite: {
     plugins: [tailwindcss()],

@@ -178,7 +178,7 @@ const { project } = Astro.props;
   const triggers = document.querySelectorAll(".lightbox-trigger");
 
   // Store all media elements for quick access
-  const mediaElements = [];
+  const mediaElements: { isVideo: boolean; src: string }[] = [];
   triggers.forEach((trigger, index) => {
     // Store reference to the media element (image or video)
     const mediaElement = trigger.querySelector("img, video");
