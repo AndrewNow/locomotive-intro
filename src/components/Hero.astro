@@ -7,13 +7,15 @@ const src =
 
 <div
   id="hero-bg"
-  class="z-10 relative h-screen pt-0 p-4 flex flex-col gap-10 hero-container bg-white"
+  class="z-10 relative md:h-screen pt-0 p-4 flex flex-col gap-10 hero-container bg-white"
 >
-  <div class="flex flex-row justify-between h-full relative">
-    <div class="flex flex-col gap-8 self-end ml-2 mb-1">
-      <div class="grid grid-cols-[1fr_2fr] gap-2 max-w-xl">
+  <div
+    class="flex flex-col-reverse md:flex-row justify-between h-full relative"
+  >
+    <div class="flex flex-col gap-8 self-end my-2 mt-8 md:ml-2 md:mb-1">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-2 max-w-xl">
         <div
-          class="w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
+          class="w-full md:w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
         >
           [ Experience ]
         </div>
@@ -26,9 +28,9 @@ const src =
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-[1fr_2fr] gap-2 max-w-xl">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-2 max-w-xl">
         <div
-          class="w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
+          class="w-full md:w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
         >
           [ Location ]
         </div>
@@ -36,9 +38,9 @@ const src =
           <div class="text-black text-sm flex items-center">Montréal, QC</div>
         </div>
       </div>
-      <div class="grid grid-cols-[1fr_2fr] gap-2 max-w-xl">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-2 max-w-xl">
         <div
-          class="w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
+          class="w-full md:w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
         >
           [ Contact ]
         </div>
@@ -67,9 +69,9 @@ const src =
           </a>
         </div>
       </div>
-      <div class="grid grid-cols-[1fr_2fr] gap-2 max-w-xl">
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr] gap-2 max-w-xl">
         <div
-          class="w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
+          class="w-full md:w-[130px] flex flex-col text-xs opacity-100 text-black/50 uppercase translate-y-0.5"
         >
           [ Socials ]
         </div>
@@ -130,32 +132,35 @@ const src =
   import { ScrollTrigger } from "gsap/ScrollTrigger";
   gsap.registerPlugin(ScrollTrigger);
 
-  gsap.to("#hero-bg", {
+  const heroBgAnimation = {
     opacity: 0,
     duration: 0.5,
-    // scaleY: 0.5,
-    // skewX: 2,
     scrollTrigger: {
       trigger: "#hero-bg",
-      start: "top [80%]",
-      end: "bottom top",
       scrub: true,
       onLeave: () =>
         gsap.to("#hero-bg", {
           opacity: 0,
-          // scaleY: 0.5,
-          // skewX: 2,
           duration: 0.5,
         }),
       onEnterBack: () =>
         gsap.to("#hero-bg", {
           opacity: 0.4,
-          // scaleY: 1,
-          // skewY: 0,
           duration: 0.5,
         }),
     },
-  });
+  };
+
+  // Set different start/end points based on screen size
+  if (window.innerWidth <= 768) {
+    heroBgAnimation.scrollTrigger.start = "bottom center";
+    heroBgAnimation.scrollTrigger.end = "bottom top";
+  } else {
+    heroBgAnimation.scrollTrigger.start = "top [80%]";
+    heroBgAnimation.scrollTrigger.end = "bottom top";
+  }
+
+  gsap.to("#hero-bg", heroBgAnimation);
 </script>
 
 <script>
